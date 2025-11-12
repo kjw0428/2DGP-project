@@ -210,7 +210,55 @@ class Run:
                                          self.Player1.y, 100,
                                          100)
 
+class Defense:
+    def __init__(self, Player1):
+        self.Player1 = Player1
 
+    def enter(self, e):
+        # 방어 시작: 고정 프레임 사용
+        self.Player1.frame = 8
+        # 정지 상태로 만들려면 이동을 0으로
+        self.Player1.dir = 0
+
+    def exit(self, e):
+        # 방어 해제 시 특별 처리 없음
+        pass
+
+    def do(self):
+        # 고정된 방어 프레임 유지
+        self.Player1.frame = 8
+
+    def handle_event(self, event):
+        # 공중/방어 중에도 방향키 입력을 받아 방향 전환만 처리
+        e = event
+        if isinstance(e, tuple) and e[0] == 'INPUT':
+            ev = e[1]
+        else:
+            ev = e
+        if ev.type == SDL_KEYDOWN:
+            if ev.key == SDLK_d:
+                self.Player1.face_dir = 1
+            elif ev.key == SDLK_a:
+                self.Player1.face_dir = -1
+        # s_up는 상태전이 맵으로 처리되므로 여기서는 처리하지 않음
+
+    def draw(self):
+        frame_num = int(self.Player1.frame)
+        if self.Player1.face_dir == 1:
+            self.Player1.image.clip_composite_draw(int(pokemon.mewtwo_data['sprites'][frame_num]["x"]),
+                                                   int(pokemon.mewtwo_data['sprites'][frame_num]['y']),
+                                                   int(pokemon.mewtwo_data['sprites'][frame_num]['width']),
+                                                   int(pokemon.mewtwo_data['sprites'][frame_num]['height']), 0,
+                                                   'h', self.Player1.x,
+                                                   self.Player1.y, 100,
+                                                   100)
+        else:
+            self.Player1.image.clip_draw(int(pokemon.mewtwo_data['sprites'][frame_num]["x"]),
+                                         int(pokemon.mewtwo_data['sprites'][frame_num]['y']),
+                                         int(pokemon.mewtwo_data['sprites'][frame_num]['width']),
+                                         int(pokemon.mewtwo_data['sprites'][frame_num]['height']), self.Player1.x,
+                                         self.Player1.y, 100,
+                                         100)
 
 
 
