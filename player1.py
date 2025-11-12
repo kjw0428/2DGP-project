@@ -1,5 +1,5 @@
 from pico2d import load_image, get_time, load_font, draw_rectangle
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_d, SDL_KEYUP, SDLK_a
+from sdl2 import SDL_KEYDOWN, SDLK_d, SDL_KEYUP, SDLK_a, SDLK_w, SDLK_s
 
 import game_world
 import game_framework
@@ -7,8 +7,8 @@ import game_framework
 from state_machine import StateMachine
 import pokemon
 
-def space_down(e): # e is space down ?
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+def w_down(e): # e is w down ?
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_w
 
 time_out = lambda e: e[0] == 'TIMEOUT'
 
@@ -27,6 +27,13 @@ def left_down(e):
 def left_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a
 
+
+def s_down(e): # e is w down ?
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s
+
+
+def s_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s
 
 
 # Player1의 Run Speed 계산
@@ -83,23 +90,68 @@ class Idle:
                                          100)
 
 
+
 class Jump:
 
     def __init__(self, Player1):
         self.Player1 = Player1
+        # 점프 물리값 (픽셀 단위)
+        self.jump_speed = 700.0  # 초기 점프 속도 (pixels/s)
+        self.gravity = -2500.0   # 중력 (pixels/s^2)
+        self.ground_y = 90
 
     def enter(self, e):
-        pass
+        # 지면에 있을 때만 점프 시작
+        if self.Player1.y <= self.ground_y + 1:
+            self.Player1.vy = self.jump_speed
+            self.Player1.frame = 0
 
     def exit(self, e):
-        pass
+        # 착지 시 속도 초기화
+        self.Player1.vy = 0
 
     def do(self):
-        pass
+        dt = game_framework.frame_time
+        # 애니메이션(Idle의 프레임 수 사용)
+        self.Player1.frame = (self.Player1.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * dt) % 5
+        # 물리 계산
+        self.Player1.vy += self.gravity * dt
+        self.Player1.y += self.Player1.vy * dt
+        # 공중에서도 좌우 이동 유지
+        self.Player1.x += self.Player1.dir * RUN_SPEED_PPS * dt
+
+        # 착지 검사
+        if self.Player1.y <= self.ground_y:
+            try:
+                self.Player1.state_machine.cur_state.exit(('LAND', None))
+            except Exception:
+                pass
+            self.Player1.y = self.ground_y
+            self.Player1.vy = 0
+            self.Player1.state_machine.cur_state = self.Player1.IDLE
+            try:
+                self.Player1.state_machine.cur_state.enter(('LAND', None))
+            except Exception:
+                pass
 
 
     def handle_event(self, event):
-        pass
+        # ('INPUT', sdl_event) 형태로 전달됨
+        e = event
+        if isinstance(e, tuple) and e[0] == 'INPUT':
+            ev = e[1]
+        else:
+            ev = e
+        if ev.type == SDL_KEYDOWN:
+            if ev.key == SDLK_d:
+                self.Player1.dir = 1
+                self.Player1.face_dir = 1
+            elif ev.key == SDLK_a:
+                self.Player1.dir = -1
+                self.Player1.face_dir = -1
+        elif ev.type == SDL_KEYUP:
+            if ev.key in (SDLK_d, SDLK_a):
+                self.Player1.dir = 0
 
     def draw(self):
         frame_num = int(self.Player1.frame)
@@ -121,6 +173,7 @@ class Jump:
 
 
 
+
 class Run:
     def __init__(self, Player1):
         self.Player1 = Player1
@@ -132,8 +185,8 @@ class Run:
             self.Player1.dir = self.Player1.face_dir = -1
 
     def exit(self, e):
-        if space_down(e):
-            self.Player1.fire_ball()
+        # 점프나 발사 등 다른 행동을 위해 남겨뒀던 공간, 현재는 사용 안 함
+        pass
 
     def do(self):
         self.Player1.frame = 5+(self.Player1.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
@@ -161,7 +214,6 @@ class Run:
 
 
 
-
 class Player1:
     def __init__(self):
         self.mycharacter = pokemon.Mewtwo()
@@ -170,17 +222,21 @@ class Player1:
         self.face_dir = 1
         self.dir = 0
         self.image = self.mycharacter.image
+        self.vy = 0.0
 
         self.IDLE = Idle(self)
         self.JUMP = Jump(self)
         self.RUN = Run(self)
+        self.DEFENSE = Defense(self)
         self.state_machine = StateMachine(
             self.IDLE,
             {
-                self.IDLE : {space_down: self.JUMP, right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
-                self.RUN : {space_down: self.JUMP,right_up: self.IDLE, left_up: self.IDLE, right_down: self.IDLE, left_down: self.IDLE},
-            }
-        )
+                self.IDLE : {w_down: self.JUMP, s_down: self.DEFENSE, right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
+                self.RUN : {w_down: self.JUMP, s_down: self.DEFENSE, right_up: self.IDLE, left_up: self.IDLE, right_down: self.IDLE, left_down: self.IDLE},
+                self.JUMP: {},
+                self.DEFENSE: {s_up: self.IDLE}
+             }
+         )
 
 
 
@@ -188,8 +244,15 @@ class Player1:
         self.state_machine.update()
 
     def handle_event(self, event):
+        # 상태 전이 처리
         self.state_machine.handle_state_event(('INPUT', event))
-        pass
+        # 현재 상태에 추가 이벤트 처리가 있으면 전달
+        try:
+            cur = self.state_machine.cur_state
+            if hasattr(cur, 'handle_event'):
+                cur.handle_event(('INPUT', event))
+        except Exception:
+            pass
 
     def draw(self):
         self.state_machine.draw()
@@ -204,4 +267,3 @@ class Player1:
         # if group == 'Player1:zombie':
         #     game_framework.quit()
         pass
-
