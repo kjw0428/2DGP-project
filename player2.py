@@ -69,7 +69,7 @@ class Idle:
 
     def do(self):
         # player1과 동일하게 Idle 애니메이션은 5 프레임 사용
-        self.Player2.frame = (self.Player2.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 5
+        self.Player2.frame = (self.Player2.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
 
     def draw(self):
         frame_num = int(self.Player2.frame)
@@ -111,7 +111,7 @@ class Jump:
     def do(self):
         dt = game_framework.frame_time
         # player1과 동일하게 Idle 애니메이션 프레임 수(5) 사용
-        self.Player2.frame = (self.Player2.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * dt) % 5
+        self.Player2.frame = (self.Player2.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * dt) % 3
         # 물리 업데이트
         self.Player2.vy += self.gravity * dt
         self.Player2.y += self.Player2.vy * dt
@@ -182,7 +182,7 @@ class Run:
 
     def do(self):
         # player1과 동일하게 Run 애니메이션은 3프레임(인덱스 5~7) 사용
-        self.Player2.frame = 5+(self.Player2.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        self.Player2.frame = 4+(self.Player2.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 9
         self.Player2.x += self.Player2.dir * RUN_SPEED_PPS * game_framework.frame_time
 
     def draw(self):
@@ -220,7 +220,7 @@ class Defense:
 
     def do(self):
         # 고정된 방어 프레임 유지
-        self.Player2.frame = 19
+        self.Player2.frame = 16
 
     def handle_event(self, event):
         # 공중/방어 중에도 방향키 입력을 받아 방향 전환만 처리
