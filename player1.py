@@ -330,6 +330,8 @@ class Player1:
         self.dir = 0
         self.image = self.mycharacter.image
         self.vy = 0.0
+        # 체력 추가
+        self.hp = 100
 
         self.IDLE = Idle(self)
         self.JUMP = Jump(self)
@@ -368,11 +370,38 @@ class Player1:
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
+        # 공격 중이면 공격 범위(빨간 네모)를 반환
+        try:
+            cur = self.state_machine.cur_state
+        except Exception:
+            cur = None
+
+        if cur == self.ATTACK:
+            # 오른쪽 방향일 때 공격 범위
+            if self.face_dir == 1:
+                return self.x + 10, self.y - 30, self.x + 90, self.y + 30
+            else:
+                return self.x - 90, self.y - 30, self.x - 10, self.y + 30
+
+        # 기본 바운딩 박스
         return self.x - 50, self.y - 50, self.x + 50, self.y + 50
 
     def handle_collision(self, group, other):
-        # if group == 'Player1:ball':
-        #     self.ball_count += 1
-        # if group == 'Player1:zombie':
-        #     game_framework.quit()
-        pass
+        # 상대가 공격 상태이고 자신이 방어 상태가 아닐 때 체력 감소
+        try:
+            other_state = other.state_machine.cur_state
+            my_state = self.state_machine.cur_state
+        except Exception:
+            return
+
+        # 상대가 공격 중이고 자신이 방어 중이 아니면 데미지
+        if other_state == other.ATTACK and my_state != self.DEFENSE:
+            DAMAGE = 1
+            self.hp -= DAMAGE
+            print(f'Player1 hit! HP = {self.hp}')
+            # 체력이 0 이하이면 종료(선택적)
+            if self.hp <= 0:
+                print('Player1 defeated')
+                # game_framework.quit()  # 필요하면 활성화
+        # 그 외 충돌은 무시
+        return

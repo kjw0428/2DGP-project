@@ -41,6 +41,9 @@ def init():
     player2 = Player2()
     game_world.add_object(player2, 1)
 
+    # player1과 player2의 충돌을 검사하도록 페어 등록
+    game_world.add_collision_pair('player1:player2', player1, player2)
+
     # game_world.add_collision_pair('boy:ball',boy,None)
     # for ball in balls:
     #     game_world.add_collision_pair('boy:ball',None, ball)

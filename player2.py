@@ -327,6 +327,8 @@ class Player2:
         self.dir = 0
         self.image = self.mycharacter.image
         self.vy = 0.0
+        # 체력 추가
+        self.hp = 100
 
         self.IDLE = Idle(self)
         self.JUMP = Jump(self)
@@ -362,11 +364,32 @@ class Player2:
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
+        # 공격 중이면 공격 범위(빨간 네모)를 반환
+        try:
+            cur = self.state_machine.cur_state
+        except Exception:
+            cur = None
+
+        if cur == self.ATTACK:
+            if self.face_dir == 1:
+                return self.x + 10, self.y - 30, self.x + 90, self.y + 30
+            else:
+                return self.x - 90, self.y - 30, self.x - 10, self.y + 30
+
         return self.x - 50, self.y - 50, self.x + 50, self.y + 50
 
     def handle_collision(self, group, other):
-        # if group == 'Player2:ball':
-        #     self.ball_count += 1
-        # if group == 'Player2:zombie':
-        #     game_framework.quit()
-        pass
+        try:
+            other_state = other.state_machine.cur_state
+            my_state = self.state_machine.cur_state
+        except Exception:
+            return
+
+        if other_state == other.ATTACK and my_state != self.DEFENSE:
+            DAMAGE = 1
+            self.hp -= DAMAGE
+            print(f'Player2 hit! HP = {self.hp}')
+            if self.hp <= 0:
+                print('Player2 defeated')
+                # game_framework.quit()
+        return
