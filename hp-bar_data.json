@@ -1,0 +1,22 @@
+{
+    "sprites": [
+        {
+            "name": "hp-bar_0",
+            "x": 30.0,
+            "y": 517.0,
+            "width": 801.0,
+            "height": 32.0,
+            "pivotX": 400.5,
+            "pivotY": 16.0
+        },
+        {
+            "name": "hp-bar_8",
+            "x": 30.0,
+            "y": 38.0,
+            "width": 801.0,
+            "height": 32.0,
+            "pivotX": 400.5,
+            "pivotY": 16.0
+        }
+    ]
+}
