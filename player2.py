@@ -1,5 +1,9 @@
 from pico2d import load_image, get_time, load_font, draw_rectangle
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_UP, SDLK_DOWN
+from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_UP, SDLK_DOWN, SDLK_RETURN
+
+
+
+
 
 import game_world
 import game_framework
@@ -34,6 +38,14 @@ def down_down(e): # e is w down ?
 
 def down_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_DOWN
+
+
+def enter_down(e): # e is w down ?
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RETURN
+
+
+def enter_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_RETURN
 
 # Player2의 Run Speed 계산
 
@@ -254,6 +266,56 @@ class Defense:
                                          self.Player2.y, 100,
                                          100)
 
+class Attack:
+    def __init__(self, Player2):
+        self.Player2 = Player2
+
+    def enter(self, e):
+        # 방어 시작: 고정 프레임 사용
+        self.Player2.frame = 19
+        # 정지 상태로 만들려면 이동을 0으로
+        self.Player2.dir = 0
+
+    def exit(self, e):
+        # 방어 해제 시 특별 처리 없음
+        pass
+
+    def do(self):
+        # 고정된 방어 프레임 유지
+        self.Player2.frame = 13+(self.Player2.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+
+    def handle_event(self, event):
+        # 공중/방어 중에도 방향키 입력을 받아 방향 전환만 처리
+        e = event
+        if isinstance(e, tuple) and e[0] == 'INPUT':
+            ev = e[1]
+        else:
+            ev = e
+        if ev.type == SDL_KEYDOWN:
+            if ev.key == SDLK_RIGHT:
+                self.Player2.face_dir = 1
+            elif ev.key == SDLK_LEFT:
+                self.Player2.face_dir = -1
+        # s_up는 상태전이 맵으로 처리되므로 여기서는 처리하지 않음
+
+    def draw(self):
+        frame_num = int(self.Player2.frame)
+        if self.Player2.face_dir == 1:  # right
+            self.Player2.image.clip_composite_draw(int(pokemon.gengar_data['sprites'][frame_num]["x"]),
+                                                   int(pokemon.gengar_data['sprites'][frame_num]['y']),
+                                                   int(pokemon.gengar_data['sprites'][frame_num]['width']),
+                                                   int(pokemon.gengar_data['sprites'][frame_num]['height']), 0,
+                                                   'h', self.Player2.x,
+                                                   self.Player2.y, 100,
+                                                   100)
+        else:  # face_dir == -1: # left
+            self.Player2.image.clip_draw(int(pokemon.gengar_data['sprites'][frame_num]["x"]),
+                                         int(pokemon.gengar_data['sprites'][frame_num]['y']),
+                                         int(pokemon.gengar_data['sprites'][frame_num]['width']),
+                                         int(pokemon.gengar_data['sprites'][frame_num]['height']), self.Player2.x,
+                                         self.Player2.y, 100,
+                                         100)
+
 
 
 class Player2:
@@ -270,13 +332,15 @@ class Player2:
         self.JUMP = Jump(self)
         self.RUN = Run(self)
         self.DEFENSE = Defense(self)
+        self.ATTACK = Attack(self)
         self.state_machine = StateMachine(
             self.IDLE,
             {
-                self.IDLE: {up_down: self.JUMP, down_down: self.DEFENSE, right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
-                self.RUN: {up_down: self.JUMP, down_down: self.DEFENSE, right_up: self.IDLE, left_up: self.IDLE, right_down: self.IDLE, left_down: self.IDLE},
+                self.IDLE: {up_down: self.JUMP, down_down: self.DEFENSE, enter_down: self.ATTACK, right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
+                self.RUN: {up_down: self.JUMP, down_down: self.DEFENSE, enter_down: self.ATTACK, right_up: self.IDLE, left_up: self.IDLE, right_down: self.IDLE, left_down: self.IDLE},
                 self.JUMP: {},
-                self.DEFENSE: {down_up: self.IDLE}
+                self.DEFENSE: {down_up: self.IDLE},
+                self.ATTACK: {enter_up: self.IDLE}
             }
         )
 
