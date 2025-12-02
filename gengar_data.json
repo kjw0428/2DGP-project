@@ -1,0 +1,184 @@
+{
+    "sprites": [
+        {
+            "name": "gengar_0",
+            "x": 0.0,
+            "y": 188.0,
+            "width": 54.0,
+            "height": 45.0,
+            "pivotX": 27.0,
+            "pivotY": 22.5
+        },
+        {
+            "name": "gengar_1",
+            "x": 55.0,
+            "y": 188.0,
+            "width": 42.0,
+            "height": 46.0,
+            "pivotX": 21.0,
+            "pivotY": 23.0
+        },
+        {
+            "name": "gengar_2",
+            "x": 99.0,
+            "y": 188.0,
+            "width": 53.0,
+            "height": 41.0,
+            "pivotX": 26.5,
+            "pivotY": 20.5
+        },
+        {
+            "name": "gengar_9",
+            "x": 0.0,
+            "y": 146.0,
+            "width": 54.0,
+            "height": 41.0,
+            "pivotX": 27.0,
+            "pivotY": 20.5
+        },
+        {
+            "name": "gengar_20",
+            "x": 1.0,
+            "y": 101.0,
+            "width": 53.0,
+            "height": 44.0,
+            "pivotX": 26.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_21",
+            "x": 55.0,
+            "y": 101.0,
+            "width": 55.0,
+            "height": 44.0,
+            "pivotX": 27.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_22",
+            "x": 111.0,
+            "y": 101.0,
+            "width": 57.0,
+            "height": 44.0,
+            "pivotX": 28.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_23",
+            "x": 169.0,
+            "y": 101.0,
+            "width": 55.0,
+            "height": 44.0,
+            "pivotX": 27.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_24",
+            "x": 225.0,
+            "y": 101.0,
+            "width": 53.0,
+            "height": 44.0,
+            "pivotX": 26.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_25",
+            "x": 279.0,
+            "y": 101.0,
+            "width": 53.0,
+            "height": 44.0,
+            "pivotX": 26.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_26",
+            "x": 333.0,
+            "y": 102.0,
+            "width": 51.0,
+            "height": 43.0,
+            "pivotX": 25.5,
+            "pivotY": 21.5
+        },
+        {
+            "name": "gengar_27",
+            "x": 385.0,
+            "y": 102.0,
+            "width": 49.0,
+            "height": 43.0,
+            "pivotX": 24.5,
+            "pivotY": 21.5
+        },
+        {
+            "name": "gengar_28",
+            "x": 435.0,
+            "y": 101.0,
+            "width": 51.0,
+            "height": 44.0,
+            "pivotX": 25.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_29",
+            "x": 0.0,
+            "y": 54.0,
+            "width": 54.0,
+            "height": 46.0,
+            "pivotX": 27.0,
+            "pivotY": 23.0
+        },
+        {
+            "name": "gengar_30",
+            "x": 55.0,
+            "y": 54.0,
+            "width": 58.0,
+            "height": 44.0,
+            "pivotX": 29.0,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_31",
+            "x": 114.0,
+            "y": 54.0,
+            "width": 55.0,
+            "height": 41.0,
+            "pivotX": 27.5,
+            "pivotY": 20.5
+        },
+        {
+            "name": "gengar_39",
+            "x": 0.0,
+            "y": 4.0,
+            "width": 42.0,
+            "height": 42.0,
+            "pivotX": 21.0,
+            "pivotY": 21.0
+        },
+        {
+            "name": "gengar_40",
+            "x": 43.0,
+            "y": 4.0,
+            "width": 53.0,
+            "height": 44.0,
+            "pivotX": 26.5,
+            "pivotY": 22.0
+        },
+        {
+            "name": "gengar_41",
+            "x": 97.0,
+            "y": 4.0,
+            "width": 53.0,
+            "height": 46.0,
+            "pivotX": 26.5,
+            "pivotY": 23.0
+        },
+        {
+            "name": "gengar_42",
+            "x": 151.0,
+            "y": 1.0,
+            "width": 53.0,
+            "height": 49.0,
+            "pivotX": 26.5,
+            "pivotY": 24.5
+        }
+    ]
+}
