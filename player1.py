@@ -324,7 +324,7 @@ class Attack:
 class Player1:
     def __init__(self):
         self.mycharacter = pokemon.Mewtwo()
-        self.x, self.y = 400, 90
+        self.x, self.y = 300, 90
         self.frame = 0
         self.face_dir = 1
         self.dir = 0

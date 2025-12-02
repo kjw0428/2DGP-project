@@ -321,7 +321,7 @@ class Attack:
 class Player2:
     def __init__(self):
         self.mycharacter = pokemon.Gengar()
-        self.x, self.y = 1200, 90
+        self.x, self.y = 900, 90
         self.frame = 0
         self.face_dir = -1
         self.dir = 0
