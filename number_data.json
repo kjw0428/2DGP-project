@@ -1,0 +1,94 @@
+{
+    "sprites": [
+        {
+            "name": "number_0",
+            "x": 1.0,
+            "y": 38.0,
+            "width": 25.0,
+            "height": 25.0,
+            "pivotX": 12.5,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_1",
+            "x": 27.0,
+            "y": 38.0,
+            "width": 15.0,
+            "height": 25.0,
+            "pivotX": 7.5,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_2",
+            "x": 43.0,
+            "y": 38.0,
+            "width": 25.0,
+            "height": 25.0,
+            "pivotX": 12.5,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_3",
+            "x": 69.0,
+            "y": 38.0,
+            "width": 26.0,
+            "height": 25.0,
+            "pivotX": 13.0,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_4",
+            "x": 96.0,
+            "y": 38.0,
+            "width": 23.0,
+            "height": 25.0,
+            "pivotX": 11.5,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_5",
+            "x": 120.0,
+            "y": 38.0,
+            "width": 25.0,
+            "height": 25.0,
+            "pivotX": 12.5,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_6",
+            "x": 146.0,
+            "y": 38.0,
+            "width": 25.0,
+            "height": 25.0,
+            "pivotX": 12.5,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_7",
+            "x": 172.0,
+            "y": 38.0,
+            "width": 24.0,
+            "height": 25.0,
+            "pivotX": 12.0,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_8",
+            "x": 197.0,
+            "y": 38.0,
+            "width": 25.0,
+            "height": 25.0,
+            "pivotX": 12.5,
+            "pivotY": 12.5
+        },
+        {
+            "name": "number_9",
+            "x": 223.0,
+            "y": 38.0,
+            "width": 25.0,
+            "height": 25.0,
+            "pivotX": 12.5,
+            "pivotY": 12.5
+        }
+    ]
+}

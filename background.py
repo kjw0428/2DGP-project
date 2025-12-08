@@ -1,4 +1,4 @@
-from pico2d import load_image, get_canvas_width, get_canvas_height
+from pico2d import load_image, get_canvas_width, get_canvas_height, get_time
 import json
 import game_world
 
@@ -31,8 +31,37 @@ class Ground:
             self.hp_sprite0 = None
             self.hp_sprite8 = None
 
+        # number 스프라이트(카운트다운) 로드
+        try:
+            self.number_image = load_image('number.png')
+        except Exception:
+            self.number_image = None
+            self.number_sprites = None
+            # 타이머 시작 시간
+            self.start_time = get_time()
+            return
+
+        try:
+            with open('number_data.json', 'r', encoding='utf-8') as f:
+                raw = f.read()
+                raw = '\n'.join([line for line in raw.splitlines() if not line.strip().startswith('//')])
+                data = json.loads(raw)
+            # sprites를 인덱스별로 정렬하여 리스트로 보관 (number_0 ... number_9)
+            sprites = {s['name']: s for s in data['sprites']}
+            self.number_sprites = [sprites.get(f'number_{i}') for i in range(10)]
+        except Exception:
+            self.number_sprites = None
+
+        # 카운트다운 시작 시간(초)
+        self.start_time = get_time()
+
     def update(self):
-        pass
+        # 남은 시간 계산(정수 초 단위)
+        try:
+            elapsed = get_time() - self.start_time
+            self.remaining_seconds = max(0, 60 - int(elapsed))
+        except Exception:
+            self.remaining_seconds = 0
 
     def draw(self):
         w = get_canvas_width()
@@ -98,6 +127,26 @@ class Ground:
             try_clip_draw(self.hp_image, sx0, sy0, sw0, sh0, left_cx, top_y, dest_w_full, dest_h)
             try_clip_draw(self.hp_image, sx8, sy8, sw8, sh8, right_cx, top_y, dest_w_full, dest_h)
             try_clip_draw(self.hp_image, sx0, sy0, sw0, sh0, right_cx, top_y, dest_w_full, dest_h)
+
+            # 플레이어가 2명 미만일 때도 중앙에 타이머 표시
+            if self.number_image and self.number_sprites:
+                sec = getattr(self, 'remaining_seconds', max(0, 60 - int(get_time() - self.start_time)))
+                tens = sec // 10
+                units = sec % 10
+                # 숫자 스프라이트 정보
+                ts = self.number_sprites[tens]
+                us = self.number_sprites[units]
+                if ts and us:
+                    # 숫자 크기 조정
+                    num_scale = 1.2
+                    tw = int(ts['width'] * num_scale)
+                    th = int(ts['height'] * num_scale)
+                    ux = int(us['width'] * num_scale)
+                    # 중심 위치
+                    center_x = (left_cx + right_cx) // 2
+                    # 두 숫자를 좌우로 배치
+                    try_clip_draw(self.number_image, int(ts['x']), int(ts['y']), int(ts['width']), int(ts['height']), center_x - tw//2, top_y, tw, th)
+                    try_clip_draw(self.number_image, int(us['x']), int(us['y']), int(us['width']), int(us['height']), center_x + ux//2, top_y, ux, th)
             return
 
         # 왼쪽/오른쪽 플레이어 선택
@@ -134,3 +183,23 @@ class Ground:
 
         draw_for_left(getattr(left_player, 'hp', 0))
         draw_for_right(getattr(right_player, 'hp', 0))
+
+        # 타이머 그리기 (플레이어 2명 이상일 때 중앙에 표시)
+        if self.number_image and self.number_sprites:
+            sec = getattr(self, 'remaining_seconds', max(0, 60 - int(get_time() - self.start_time)))
+            tens = sec // 10
+            units = sec % 10
+            ts = self.number_sprites[tens]
+            us = self.number_sprites[units]
+            if ts and us:
+                # 숫자 크기 및 위치 계산
+                num_scale = 1.2
+                tw = int(ts['width'] * num_scale)
+                th = int(ts['height'] * num_scale)
+                uw = int(us['width'] * num_scale)
+                left_cx = left_dest_left + dest_w_full // 2
+                right_cx = right_dest_left + dest_w_full // 2
+                center_x = (left_cx + right_cx) // 2
+                # 왼쪽(십의 자리), 오른쪽(일의 자리) 위치
+                try_clip_draw(self.number_image, int(ts['x']), int(ts['y']), int(ts['width']), int(ts['height']), center_x - tw//2 - 8, top_y, tw, th)
+                try_clip_draw(self.number_image, int(us['x']), int(us['y']), int(us['width']), int(us['height']), center_x + uw//2 - 8, top_y, uw, th)
