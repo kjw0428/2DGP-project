@@ -1,7 +1,7 @@
 from pico2d import *
-
 import game_framework
 import game_world
+import pygame  # 사운드 재생을 위한 pygame 추가
 
 from player1 import Player1
 from player2 import Player2
@@ -101,6 +101,16 @@ def handle_events():
 def init():
     global player1, player2, ground, rounds_played, p1_wins, p2_wins, round_time_remaining
 
+    # pygame 초기화 및 배경음악 로드
+    pygame.init()
+    pygame.mixer.init()
+    try:
+        pygame.mixer.music.load('battle.mp3')
+        pygame.mixer.music.set_volume(0.5)  # 볼륨 설정 (0.0 ~ 1.0)
+        pygame.mixer.music.play(-1)  # 무한 반복 재생
+    except Exception as e:
+        print(f"Error loading or playing background music: {e}")
+
     rounds_played = 0
     p1_wins = 0
     p2_wins = 0
@@ -195,6 +205,8 @@ def draw():
 
 def finish():
     game_world.clear()
+    pygame.mixer.music.stop()  # 배경음악 정지
+    pygame.quit()  # pygame 종료
 
 
 def pause():
