@@ -84,9 +84,17 @@ def update():
         p1_hp = None
         p2_hp = None
 
-    # 타이머 종료 시 종료
+    # 타이머 종료 시 HP 비교하여 승자/무승부 판정 후 종료
     if round_time_remaining <= 0:
-        print('Time up. Exiting game.')
+        if p1_hp is not None and p2_hp is not None:
+            if p1_hp > p2_hp:
+                print('Time up. Player1 wins the match!')
+            elif p2_hp > p1_hp:
+                print('Time up. Player2 wins the match!')
+            else:
+                print('Time up. Match draw.')
+        else:
+            print('Time up. Exiting game.')
         game_framework.quit()
         return
 
